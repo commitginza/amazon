@@ -172,7 +172,7 @@
           formData.append('token', token);
   
           // fetchでPOST
-          fetch(GAS_BASE, {
+          fetch(`${GAS_BASE}?mode=form&token=${encodeURIComponent(token)}`, {
             method: 'POST',
             body: formData
           })
