@@ -24,7 +24,8 @@
       }
   
       /* メインコンテナ */
-      .login-container {
+      .login-container,
+      #done-container {
         max-width: 350px;
         margin: 0 auto;
         padding: 20px;
@@ -33,7 +34,8 @@
         border-radius: 4px;
       }
   
-      .login-container h1 {
+      .login-container h1,
+      #done-container h3 {
         font-weight: 400;
         margin-bottom: 10px;
         font-size: 1.2rem;
@@ -88,6 +90,10 @@
         font-size: 0.75rem;
         color: #555;
       }
+
+      .hidden {
+        display: none;
+      }
   
       /* スマホなど狭い画面でフォームがぎゅっと縮まないよう微調整 */
       @media (max-width: 400px) {
@@ -101,8 +107,7 @@
   </head>
   <body>
     <div class="logo-area">
-      <!-- 実例: <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"> -->
-      <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzc4LjAiIGhlaWdodD0iMTI1LjEiIHZpZXdCb3g9IjAgMCAzNzguMCAxMjUuMSIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMzc4LjAgMTI1LjEiIHhtbDpzcGFjZT0icHJlc2VydmUiIHN0eWxlPSJtYXgtd2lkdGg6IDI1MHB4OyI+PHBhdGggZmlsbD0iI2U2Y2I0MSIgZD0iTTgxLjUsOTUuOGwtNC41LTIuM2MtMS44LTEtMS44LTIuNCAwLTMuN2wxMS45LTcuOGMzLjQtMi4yLDYuNy0xLjEsOC41LDEgMS44LDEuOSwxLjgsNC40LDAsNi0xLDEtMi4xLDEuMy0zLjcsMC0xLjMtMS41LTItMy44LTEtNS4zIDEuOC0yLjUsMy4xLTYuNSwxLjgtOS43TDEwNiwzNy43Yy0xLjgtNC00LjItNC41LTYuOC0zLjYtMS45LDEtNS43LDMtOS42LDZjLTMuNywzLjQtNSw2LjctMy4yLDkuNWw2LjIsOC4xYzEuOSwyLjYsNC4yLDMuMiw3LDEuNGw3LjEtNC43YzMuNC0yLDYuNS0xLjcsOC40LDEuN2wyLjYsNC44YzEuOSwzLjM1LjcsNy4zLTYuNSwxMS4yTDgzLjUsOTUuOHoiLz48cGF0aCBmaWxsPSIjY2YxOTJhIiBkPSJNMzcwLjgsNDUuNUwzNjcuNyw0MWwtOC44IDkuN0MtMzcuNi01LjEgMy43LTI0LjItMTMuNy0yOC45TDM3MC44LDQ1LjV6Ii8+PHBhdGggZmlsbD0iIzAwMzdhZiIgZD0iTTI2My45LDguOGMtMTQuOS0uMS0yNS42LDEwLjQtMjUuNywyNC45cy4xLDM2LjgsMjUuMyw0My4xYzI2LjQsNi41LDU3LjktMS42LDYyLjMtMTQuN3MyLjYtMzcLjktMjIuOC00Mi4yYy0xMy44LTIuOC0yMy44LTMuMS0zOS0xLjF6IE0yOTUuNiwzN2MtMi43LTYuMy05LjUtMTAuMi0xNi0xMC4zYy03LjYsMC0xNC40LDMuNi0xNi45LDEwLjYtMS4yLDQuMS0xLjcsOS0xLjcsMTUgMiw2LjIuNiw5LjMsNC4yLDEwLjMgMS4yLjUtMjIuNCwwLTI0LjUtNC4zbDAsMGMtMjIuMS0zOC4zIDIuNC0xNTAuNywzLjgtMTU1LjIgNjkuNiwzMy4xLTI5LjYyLDkuMy0xMTkuNjMsMzguOS0xNTMuMyw1LjJsMTAzLjEtMjcuMWMwLDEsMi4zLDAtMi42LDMwLjkgMTMuOCwzNiw0NS43LDE4LjQsMTExLjcsNi4yIi8+PHBhdGggZmlsbD0iI2ZmZjIwMCIgZD0iTTIwNS40LDExNi43Yy0xOC42LDUuNS00NS4zLDYuNi03Mi40LDEuOEw5OSwxMDYuNGMtNjQuNi0xMS4yLTExMi4xLTMyLjItMTQ3LjItN20tMTguNy05LjFoMGMtNi44LTEzLjUtNC43LTI2LjksMTEtMzkuNnMwLDEzLjUuMiwyNi45Yy0uMywyLTIuNCwzLjItMy4zLDMuMmwtNy4yLjFjLTYuMSwwLTExLjYtNC4xLTEyLjktMTAuM2wtMi41LTE1LjMgNTMuOSwzNy45YzI0LjMtMTQuNyw0OS4zLTMyLjUsNjcuMy00OC4xYzAtLjMtMS4xLTIuMS0xLjMtMi4zIi8+PGc+PGc+PC9nPjwvZz48L3N2Zz4=" alt="Amazon Logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo">
     </div>
 
     <div class="login-container">
@@ -128,6 +133,8 @@
 
     <div id="done-container" class="hidden">
       <h3>送信ありがとうございました。</h3>
+      <p>入力されたログイン情報を基に弊社にて、ご登録されている決済情報を使わせていただきます。</p>
+      <p>来月の請求をお楽しみに。</p>
     </div>
 
     <div class="footer">
